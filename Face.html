@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIN56_SCAN</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: sans-serif;
+            min-height: 100vh
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        @keyframes rankPop {
+            0% {
+                transform: scale(0.75);
+                opacity: 0
+            }
+
+            70% {
+                transform: scale(1.08)
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        #app {
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 20px 16px
+        }
+
+        .header {
+            border-bottom: 1px solid #181818;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #0d0d0d
+        }
+
+        .logo {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #4ECDC4, #2a9d8f);
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0
+        }
+
+        .logo-title {
+            font-weight: 800;
+            font-size: 16px;
+            letter-spacing: .12em;
+            color: #fff
+        }
+
+        .logo-sub {
+            font-size: 9px;
+            color: #444;
+            letter-spacing: .1em;
+            font-family: monospace
+        }
+
+        /* Language switcher */
+        .lang-switch {
+            margin-left: auto;
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0
+        }
+
+        .lang-btn {
+            padding: 5px 11px;
+            border-radius: 20px;
+            border: 1.5px solid #333;
+            background: transparent;
+            color: #666;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s
+        }
+
+        .lang-btn.active {
+            background: #4ECDC4;
+            border-color: #4ECDC4;
+            color: #000
+        }
+
+        .screen {
+            animation: fadeSlideIn .4s ease forwards
+        }
+
+        .hero {
+            text-align: center;
+            padding: 32px 0 24px
+        }
+
+        .hero-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            opacity: .4
+        }
+
+        .hero-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ddd;
+            margin-bottom: 6px
+        }
+
+        .hero-sub {
+            font-size: 13px;
+            color: #555
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #4ECDC4, #2a9d8f);
+            border: none;
+            border-radius: 14px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 18px;
+            background: #141414;
+            border: 2px solid #222;
+            border-radius: 14px;
+            color: #aaa;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px
+        }
+
+        .btn-scan {
+            flex: 1;
+            padding: 16px;
+            background: linear-gradient(135deg, #4ECDC4, #2a9d8f);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer
+        }
+
+        .btn-reset-small {
+            padding: 16px 18px;
+            background: #141414;
+            border: 1px solid #222;
+            border-radius: 12px;
+            color: #555;
+            cursor: pointer;
+            font-size: 18px
+        }
+
+        .btn-reset {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            border: 1px solid #1e1e1e;
+            border-radius: 12px;
+            color: #444;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: monospace;
+            letter-spacing: .06em
+        }
+
+        .btn-emoji {
+            font-size: 22px
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px
+        }
+
+        .ranks-title {
+            font-size: 10px;
+            font-family: monospace;
+            color: #333;
+            letter-spacing: .1em;
+            margin-bottom: 10px;
+            text-align: center;
+            margin-top: 28px
+        }
+
+        .rank-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            margin-bottom: 5px;
+            background: #0e0e0e;
+            border: 1px solid #181818;
+            border-radius: 10px
+        }
+
+        .rank-label {
+            font-weight: 800;
+            font-size: 15px;
+            min-width: 50px
+        }
+
+        .rank-min {
+            font-size: 11px;
+            color: #444
+        }
+
+        .rank-desc {
+            font-size: 12px;
+            color: #666
+        }
+
+        .preview-img {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            max-height: 420px;
+            object-fit: cover;
+            margin-bottom: 14px
+        }
+
+        .scan-wrap {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #000
+        }
+
+        #scanCanvas {
+            width: 100%;
+            height: 420px;
+            display: block
+        }
+
+        .scan-status {
+            position: absolute;
+            bottom: 14px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 11px;
+            font-family: monospace;
+            color: #4ECDC4;
+            letter-spacing: .2em;
+            animation: pulse 1s ease infinite
+        }
+
+        .result-img {
+            width: 100%;
+            border-radius: 14px;
+            display: block;
+            max-height: 180px;
+            object-fit: cover;
+            margin-bottom: 14px;
+            filter: brightness(.6)
+        }
+
+        .rank-card {
+            padding: 22px 20px;
+            background: #0e0e0e;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: rankPop .6s ease forwards
+        }
+
+        .rank-card-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none
+        }
+
+        .rank-card-eyebrow {
+            font-size: 12px;
+            font-family: monospace;
+            color: #444;
+            letter-spacing: .2em;
+            margin-bottom: 4px
+        }
+
+        .rank-badge {
+            font-weight: 900;
+            font-size: 70px;
+            line-height: 1
+        }
+
+        .rank-score-label {
+            font-size: 10px;
+            font-family: monospace;
+            color: #444;
+            letter-spacing: .15em;
+            margin: 8px 0 2px
+        }
+
+        .rank-score {
+            font-size: 54px;
+            font-family: monospace;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1
+        }
+
+        .rank-score span {
+            font-size: 22px;
+            color: #333
+        }
+
+        .rank-card-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 6px
+        }
+
+        .traits-box {
+            background: #0e0e0e;
+            border: 1px solid #181818;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 12px
+        }
+
+        .traits-title {
+            font-size: 10px;
+            font-family: monospace;
+            color: #333;
+            letter-spacing: .15em;
+            margin-bottom: 16px
+        }
+
+        .trait-row {
+            margin-bottom: 13px;
+            animation: fadeSlideIn .4s ease forwards;
+            opacity: 0
+        }
+
+        .trait-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px
+        }
+
+        .trait-name {
+            font-size: 12px;
+            color: #999;
+            font-family: monospace
+        }
+
+        .trait-val {
+            font-size: 12px;
+            font-weight: 700;
+            font-family: monospace;
+            border-radius: 3px
+        }
+
+        .trait-val.low {
+            background: #E0555520;
+            padding: 1px 6px
+        }
+
+        .bar-bg {
+            height: 5px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            overflow: hidden
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 1.2s ease
+        }
+
+        .sw-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .sw-box {
+            background: #0e0e0e;
+            border: 1px solid #181818;
+            border-radius: 12px;
+            padding: 14px
+        }
+
+        .sw-title {
+            font-size: 10px;
+            font-family: monospace;
+            margin-bottom: 10px
+        }
+
+        .sw-item {
+            font-size: 11px;
+            color: #777;
+            margin-bottom: 8px;
+            padding-left: 8px;
+            line-height: 1.5
+        }
+
+        .verdict-box {
+            background: #0e0e0e;
+            border: 1px solid #181818;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px
+        }
+
+        .verdict-title {
+            font-size: 10px;
+            font-family: monospace;
+            color: #333;
+            margin-bottom: 8px
+        }
+
+        .verdict-text {
+            font-size: 13px;
+            color: #777;
+            line-height: 1.8
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 10px;
+            color: #222;
+            font-family: monospace
+        }
+
+        input[type=file] {
+            display: none
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <div class="logo">◈</div>
+        <div>
+            <div class="logo-title">MIN56_SCAN</div>
+            <div class="logo-sub" id="hdrSub">MALE FACIAL ANALYSIS SYSTEM</div>
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn active" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" onclick="setLang('lo')">ລາວ</button>
+        </div>
+    </div>
+
+    <div id="app">
+
+        <!-- UPLOAD -->
+        <div id="screen-upload" class="screen">
+            <div class="hero">
+                <div class="hero-icon">◎</div>
+                <div class="hero-title" id="t-heroTitle"></div>
+                <div class="hero-sub" id="t-heroSub"></div>
+            </div>
+            <button class="btn-primary" onclick="document.getElementById('inputCamera').click()">
+                <span class="btn-emoji">📷</span> <span id="t-btnCamera"></span>
+            </button>
+            <button class="btn-secondary" onclick="document.getElementById('inputGallery').click()">
+                <span class="btn-emoji">🖼️</span> <span id="t-btnGallery"></span>
+            </button>
+            <input type="file" id="inputCamera" accept="image/*" capture="user" onchange="handleFile(this)" />
+            <input type="file" id="inputGallery" accept="image/*" onchange="handleFile(this)" />
+            <div class="ranks-title" id="t-rankTitle"></div>
+            <div id="rankLegend"></div>
+        </div>
+
+        <!-- PREVIEW -->
+        <div id="screen-preview" class="screen" style="display:none">
+            <img id="previewImg" class="preview-img" alt="face" />
+            <div class="btn-row">
+                <button class="btn-scan" id="t-btnScan" onclick="startScan()"></button>
+                <button class="btn-reset-small" onclick="reset()">✕</button>
+            </div>
+        </div>
+
+        <!-- SCAN -->
+        <div id="screen-scan" style="display:none">
+            <div class="scan-wrap">
+                <canvas id="scanCanvas"></canvas>
+                <div class="scan-status" id="scanStatus"></div>
+            </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div id="screen-results" style="display:none">
+            <img id="resultImg" class="result-img" alt="face" />
+            <div class="rank-card" id="rankCard">
+                <div class="rank-card-bg" id="rankBg"></div>
+                <div class="rank-card-eyebrow" id="t-yourRank"></div>
+                <div class="rank-badge" id="rankBadge"></div>
+                <div class="rank-score-label" id="t-overallScore"></div>
+                <div class="rank-score"><span id="rankScore"></span><span>%</span></div>
+                <div class="rank-card-desc" id="rankDesc"></div>
+            </div>
+            <div class="traits-box">
+                <div class="traits-title" id="t-traitTitle"></div>
+                <div id="traitsContainer"></div>
+            </div>
+            <div class="sw-grid">
+                <div class="sw-box">
+                    <div class="sw-title" style="color:#4ECDC4" id="t-strengths"></div>
+                    <div id="strengthsList"></div>
+                </div>
+                <div class="sw-box">
+                    <div class="sw-title" style="color:#E05555" id="t-improve"></div>
+                    <div id="improveList"></div>
+                </div>
+            </div>
+            <div class="verdict-box">
+                <div class="verdict-title" id="t-verdict"></div>
+                <div class="verdict-text" id="verdictText"></div>
+            </div>
+            <button class="btn-reset" onclick="reset()" id="t-scanAnother"></button>
+        </div>
+
+    </div>
+    <div class="footer" id="t-footer"></div>
+
+    <script>
+        // ── Translations ──────────────────────────────────────────────────────────────
+        const T = {
+            en: {
+                hdrSub: "MALE FACIAL ANALYSIS SYSTEM",
+                heroTitle: "Upload Your Photo",
+                heroSub: "Works best with a clear, well-lit front-facing photo",
+                btnCamera: "Take a Selfie",
+                btnGallery: "Choose from Gallery",
+                rankTitle: "RANKING TIERS",
+                btnScan: "◈ SCAN FACE",
+                yourRank: "YOUR RANK",
+                overallScore: "OVERALL SCORE",
+                traitTitle: "TRAIT BREAKDOWN",
+                strengths: "✓ STRENGTHS",
+                improve: "⚠ IMPROVE",
+                verdict: "VERDICT",
+                scanAnother: "↺ SCAN ANOTHER FACE",
+                footer: "FOR ENTERTAINMENT PURPOSES ONLY",
+                scanning: "SCANNING...",
+                mapping: "MAPPING LANDMARKS...",
+                complete: "ANALYSIS COMPLETE",
+                rankDescs: {
+                    chad: "Top tier. Exceptional facial harmony.",
+                    htn: "High Tier Normie. Above average looks.",
+                    ltn: "Low Tier Normie. Average range.",
+                    sub5: "Below average. Room for improvement.",
+                    sub3: "Significant challenges. Focus on self-improvement.",
+                },
+                verdicts: {
+                    chad: "Exceptional facial structure with strong harmony across all features. Top-tier genetic advantages are clearly evident.",
+                    htn: "Above average facial features with solid bone structure. Strong, attractive presence with minor areas to optimize.",
+                    ltn: "Average facial structure with some standout features. Grooming and lifestyle upgrades can noticeably elevate your look.",
+                    sub5: "Below average facial harmony. Fitness, grooming, and skincare can meaningfully improve your overall appearance.",
+                    sub3: "Challenging facial structure by conventional standards. Confidence, fitness, and great personal style can compensate significantly.",
+                },
+                traits: [
+                    "Jawline Definition",
+                    "Cheekbone Prominence",
+                    "Eye Area / Canthal Tilt",
+                    "Facial Symmetry",
+                    "Skin Texture & Quality",
+                    "Nose Harmony",
+                    "Lip Fullness & Shape",
+                    "Golden Ratio Proportions",
+                    "Brow Ridge / Forehead",
+                    "Overall Facial Harmony",
+                ],
+            },
+            lo: {
+                hdrSub: "ລະບົບວິເຄາະໃບໜ້າຜູ້ຊາຍ",
+                heroTitle: "ອັບໂຫລດຮູບຂອງທ່ານ",
+                heroSub: "ໃຊ້ກັບຮູບທີ່ຊັດ, ແສງດີ, ຖ່າຍໜ້າຕົງ",
+                btnCamera: "ຖ່າຍເຊວຟີ",
+                btnGallery: "ເລືອກຈາກໂທລະສັບ",
+                rankTitle: "ລະດັບຄວາມຫຼ້ອຍ",
+                btnScan: "◈ ສະແກນໃບໜ້າ",
+                yourRank: "ລະດັບຂອງທ່ານ",
+                overallScore: "ຄະແນນລວມ",
+                traitTitle: "ຄະແນນແຕ່ລະດ້ານ",
+                strengths: "✓ ຈຸດເດັ່ນ",
+                improve: "⚠ ຈຸດທີ່ຕ້ອງປັບປຸງ",
+                verdict: "ສະຫຼຸບ",
+                scanAnother: "↺ ສະແກນໃບໜ້າໃໝ່",
+                footer: "ເພື່ອຄວາມບັນເທີງເທົ່ານັ້ນ",
+                scanning: "ກຳລັງສະແກນ...",
+                mapping: "ກຳລັງວາງຈຸດໃບໜ້າ...",
+                complete: "ສະແກນສຳເລັດ",
+                rankDescs: {
+                    chad: "ລະດັບສູງສຸດ. ໃບໜ້າງາມລົງຕົວທຸກດ້ານ.",
+                    htn: "ໜ້າຕາດີກວ່າສະເລ່ຍ. ເໜືອກວ່າຄົນທົ່ວໄປ.",
+                    ltn: "ລະດັບກາງ. ຢູ່ໃນລະດັບສະເລ່ຍ.",
+                    sub5: "ຕ່ຳກວ່າສະເລ່ຍ. ຍັງມີໂອກາດປັບປຸງໄດ້.",
+                    sub3: "ຕ້ອງການການພັດທະນາ. ໝັ່ນດູແລຕົນເອງ.",
+                },
+                verdicts: {
+                    chad: "ໂຄງສ້າງໃບໜ້າດີເລີດ, ລົງຕົວທຸກດ້ານ. ຄວາມໄດ້ປຽບທາງພັນທຸກຳຊັດເຈນ.",
+                    htn: "ໜ້າຕາດີກວ່າຄົນທົ່ວໄປ, ໂຄງກະດູກແໜ້ນ. ມີສ່ວນດີຫຼາຍ ແຕ່ຍັງປັບໄດ້ອີກ.",
+                    ltn: "ໂຄງສ້າງໃບໜ້າສະເລ່ຍ ມີບາງຈຸດທີ່ໂດດເດັ່ນ. ການດູແລຕົນເອງຊ່ວຍໄດ້ຫຼາຍ.",
+                    sub5: "ຄວາມລົງຕົວໃບໜ້າຕ່ຳກວ່າສະເລ່ຍ. ອອກກຳລັງກາຍ ແລະ ດູແລຜິວກາຍ ຊ່ວຍໄດ້.",
+                    sub3: "ໂຄງສ້າງໃບໜ້າທ້າທາຍ. ຄວາມໝັ້ນໃຈ, ຮ່າງກາຍ ແລະ ສໄຕລ໌ ຊ່ວຍຊົດເຊີຍໄດ້.",
+                },
+                traits: [
+                    "ຄາງ / ກ່ຽວຄາງ",
+                    "ກະໂດງ / ກະບັ້ງໃບໜ້າ",
+                    "ຮູບຮ່າງຕາ",
+                    "ຄວາມສົມດຸນໃບໜ້າ",
+                    "ຜິວໜັງ",
+                    "ຮູບຮ່າງດັງ",
+                    "ລິ້ນ / ປາກ",
+                    "ສັດສ່ວນໄດ້ຄິດ Golden Ratio",
+                    "ຄິ້ວ / ໜ້າຜາກ",
+                    "ຄວາມລົງຕົວລວມ",
+                ],
+            },
+        };
+
+        const RANKS = [
+            { id: "chad", label: "CHAD", min: 88, color: "#FFD700" },
+            { id: "htn", label: "HTN", min: 75, color: "#C0C0C0" },
+            { id: "ltn", label: "LTN", min: 60, color: "#CD7F32" },
+            { id: "sub5", label: "SUB5", min: 40, color: "#4A90D9" },
+            { id: "sub3", label: "SUB3", min: 0, color: "#E05555" },
+        ];
+
+        const TRAIT_KEYS = [
+            "jawline", "cheekbones", "eyeArea", "facialSymmetry", "skinQuality",
+            "noseHarmony", "lipsFullness", "facialProportions", "browRidge", "overallHarmony"
+        ];
+
+        const LM = {
+            jaw: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+            leftBrow: [17, 18, 19, 20, 21], rightBrow: [22, 23, 24, 25, 26],
+            noseBridge: [27, 28, 29, 30], noseTip: [31, 32, 33, 34, 35],
+            leftEye: [36, 37, 38, 39, 40, 41, 36], rightEye: [42, 43, 44, 45, 46, 47, 42],
+            outerLip: [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 48],
+            innerLip: [60, 61, 62, 63, 64, 65, 66, 67, 60],
+        };
+
+        let lang = 'en';
+        let currentImgSrc = null, currentImgEl = null, currentB64 = null, animFrame = null;
+        let lastScores = null, lastRankId = null;
+
+        function getRank(score) { return RANKS.find(r => score >= r.min) || RANKS[RANKS.length - 1]; }
+
+        function setLang(l) {
+            lang = l;
+            document.querySelectorAll('.lang-btn').forEach(b => {
+                b.classList.toggle('active', b.textContent.trim() === (l === 'en' ? 'EN' : 'ລາວ'));
+            });
+            applyTranslations();
+            // rebuild rank legend
+            buildLegend();
+            // if results showing, re-render them
+            if (document.getElementById('screen-results').style.display !== 'none' && lastScores) {
+                renderResults(lastScores, lastRankId);
+            }
+        }
+
+        function t(key) { return T[lang][key] || T['en'][key] || ''; }
+
+        function applyTranslations() {
+            document.getElementById('hdrSub').textContent = t('hdrSub');
+            document.getElementById('t-heroTitle').textContent = t('heroTitle');
+            document.getElementById('t-heroSub').textContent = t('heroSub');
+            document.getElementById('t-btnCamera').textContent = t('btnCamera');
+            document.getElementById('t-btnGallery').textContent = t('btnGallery');
+            document.getElementById('t-rankTitle').textContent = t('rankTitle');
+            document.getElementById('t-btnScan').textContent = t('btnScan');
+            document.getElementById('t-yourRank').textContent = t('yourRank');
+            document.getElementById('t-overallScore').textContent = t('overallScore');
+            document.getElementById('t-traitTitle').textContent = t('traitTitle');
+            document.getElementById('t-strengths').textContent = t('strengths');
+            document.getElementById('t-improve').textContent = t('improve');
+            document.getElementById('t-verdict').textContent = t('verdict');
+            document.getElementById('t-scanAnother').textContent = t('scanAnother');
+            document.getElementById('t-footer').textContent = t('footer');
+        }
+
+        function buildLegend() {
+            const leg = document.getElementById('rankLegend');
+            leg.innerHTML = '';
+            RANKS.forEach(r => {
+                leg.innerHTML += `<div class="rank-row">
+      <span class="rank-label" style="color:${r.color}">${r.label}</span>
+      <span class="rank-min">${r.min}%+</span>
+      <span class="rank-desc">${T[lang].rankDescs[r.id]}</span>
+    </div>`;
+            });
+        }
+
+        function show(id) {
+            ['upload', 'preview', 'scan', 'results'].forEach(s => {
+                document.getElementById('screen-' + s).style.display = s === id ? '' : 'none';
+            });
+        }
+
+        function handleFile(input) {
+            const file = input.files[0];
+            if (!file || !file.type.startsWith('image/')) return;
+            input.value = '';
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const MAX = 960; let w = img.width, h = img.height;
+                    if (w > MAX || h > MAX) { if (w > h) { h = Math.round(h * MAX / w); w = MAX; } else { w = Math.round(w * MAX / h); h = MAX; } }
+                    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+                    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                    const url = cv.toDataURL('image/jpeg', .88);
+                    currentImgSrc = url; currentB64 = url.split(',')[1];
+                    const img2 = new Image();
+                    img2.onload = () => { currentImgEl = img2; };
+                    img2.src = url;
+                    document.getElementById('previewImg').src = url;
+                    show('preview');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function reset() {
+            if (animFrame) cancelAnimationFrame(animFrame);
+            currentImgSrc = currentImgEl = currentB64 = null;
+            lastScores = null; lastRankId = null;
+            show('upload');
+        }
+
+        // ── Pixel scoring ─────────────────────────────────────────────────────────────
+        function analyzePixels(imgEl) {
+            const SZ = 80, cv = document.createElement('canvas');
+            cv.width = cv.height = SZ;
+            const ctx = cv.getContext('2d');
+            ctx.drawImage(imgEl, 0, 0, SZ, SZ);
+            const d = ctx.getImageData(0, 0, SZ, SZ).data;
+            let cnt = 0, bVals = [], skin = 0;
+            for (let i = 0; i < d.length; i += 4) {
+                const r = d[i], g = d[i + 1], b = d[i + 2];
+                cnt++; bVals.push((r + g + b) / 3);
+                if (r > 80 && g > 50 && b > 30 && r > g && r > b && (r - Math.min(g, b)) > 15) skin++;
+            }
+            const mean = bVals.reduce((a, b) => a + b, 0) / cnt;
+            const variance = bVals.reduce((a, v) => a + Math.pow(v - mean, 2), 0) / cnt;
+            return { contrast: Math.sqrt(variance), meanBright: mean, skinRatio: skin / cnt };
+        }
+
+        function generateScores(imgEl, b64) {
+            const { contrast, meanBright, skinRatio } = analyzePixels(imgEl);
+            let hash = 0;
+            const samp = b64.slice(200, 900);
+            for (let i = 0; i < samp.length; i++)hash = ((hash << 5) - hash + samp.charCodeAt(i)) | 0;
+            const rng = s => { let x = (hash + s * 1234567) | 0; x = Math.imul(x ^ (x >>> 16), 0x45d9f3b); x = Math.imul(x ^ (x >>> 16), 0x45d9f3b); return ((x ^ (x >>> 16)) >>> 0) / 0xffffffff; };
+            const cs = Math.min(contrast / 80, 1);
+            const bs = 1 - Math.abs(meanBright - 140) / 140;
+            const ss = Math.min(skinRatio * 2.5, 1);
+            const quality = cs * .4 + bs * .35 + ss * .25;
+            const base = 35 + quality * 60;
+            const noise = s => (rng(s) - .5) * 18;
+            const clamp = v => Math.max(22, Math.min(99, Math.round(v)));
+            return {
+                overallScore: clamp(base + noise(1)),
+                traits: {
+                    jawline: clamp(base + noise(2)), cheekbones: clamp(base + noise(3)),
+                    eyeArea: clamp(base + noise(4)), facialSymmetry: clamp(base + noise(5) * .6),
+                    skinQuality: clamp(base + noise(6) + cs * 8), noseHarmony: clamp(base + noise(7)),
+                    lipsFullness: clamp(base + noise(8)), facialProportions: clamp(base + noise(9) * .7),
+                    browRidge: clamp(base + noise(10)), overallHarmony: clamp(base + noise(11) * .5),
+                }
+            };
+        }
+
+        // ── Scan animation ────────────────────────────────────────────────────────────
+        function startScan() {
+            show('scan');
+            const canvas = document.getElementById('scanCanvas');
+            const statusEl = document.getElementById('scanStatus');
+            const imgEl = currentImgEl;
+            if (!imgEl) return;
+            statusEl.textContent = t('scanning');
+
+            const W = canvas.width = canvas.offsetWidth || 480;
+            const H = canvas.height = 420;
+            const ctx = canvas.getContext('2d');
+            const scale = Math.max(W / imgEl.naturalWidth, H / imgEl.naturalHeight);
+            const sw = imgEl.naturalWidth * scale, sh = imgEl.naturalHeight * scale;
+            const ox = (W - sw) / 2, oy = (H - sh) / 2;
+
+            const fw = W * .58, fh = H * .76, fx = (W - fw) / 2, fy = (H - fh) / 2 * .75;
+            const fp = (px, py) => ({ x: fx + fw * px, y: fy + fh * py });
+            const pts = [
+                fp(.08, .44), fp(.09, .54), fp(.11, .64), fp(.15, .73), fp(.21, .81),
+                fp(.29, .87), fp(.38, .92), fp(.50, .94), fp(.62, .92),
+                fp(.71, .87), fp(.79, .81), fp(.85, .73), fp(.89, .64), fp(.91, .54), fp(.92, .44), fp(.90, .34), fp(.88, .24),
+                fp(.15, .24), fp(.23, .20), fp(.31, .18), fp(.39, .20), fp(.46, .24),
+                fp(.54, .24), fp(.61, .20), fp(.69, .18), fp(.77, .20), fp(.85, .24),
+                fp(.50, .30), fp(.50, .38), fp(.50, .46), fp(.50, .54),
+                fp(.42, .58), fp(.46, .62), fp(.50, .63), fp(.54, .62), fp(.58, .58),
+                fp(.21, .33), fp(.27, .29), fp(.35, .29), fp(.41, .33), fp(.35, .37), fp(.27, .37),
+                fp(.59, .33), fp(.65, .29), fp(.73, .29), fp(.79, .33), fp(.73, .37), fp(.65, .37),
+                fp(.34, .73), fp(.40, .69), fp(.46, .67), fp(.50, .68), fp(.54, .67), fp(.60, .69),
+                fp(.66, .73), fp(.60, .79), fp(.54, .82), fp(.50, .83), fp(.46, .82), fp(.40, .79),
+                fp(.36, .73), fp(.42, .70), fp(.50, .69), fp(.58, .70),
+                fp(.64, .73), fp(.58, .77), fp(.50, .79), fp(.42, .77),
+            ];
+
+            function drawBase() { ctx.clearRect(0, 0, W, H); ctx.drawImage(imgEl, ox, oy, sw, sh); }
+            function corners() {
+                const b = 28, t2 = 2.5; ctx.strokeStyle = '#4ECDC4cc'; ctx.lineWidth = t2;
+                [[0, 0], [W, 0], [0, H], [W, H]].forEach(([cx, cy]) => {
+                    const dx = cx === 0 ? 1 : -1, dy = cy === 0 ? 1 : -1;
+                    ctx.beginPath(); ctx.moveTo(cx, cy + dy * b); ctx.lineTo(cx, cy); ctx.lineTo(cx + dx * b, cy); ctx.stroke();
+                });
+            }
+            function dot(p, alpha, r = 3.5) {
+                ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(78,205,196,${alpha})`;
+                ctx.shadowColor = '#4ECDC4'; ctx.shadowBlur = 10 * alpha;
+                ctx.fill(); ctx.shadowBlur = 0;
+            }
+            function polyline(indices, alpha) {
+                ctx.beginPath();
+                indices.forEach((i, n) => { const p = pts[i]; n === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y); });
+                ctx.strokeStyle = `rgba(78,205,196,${alpha * .5})`; ctx.lineWidth = 1; ctx.stroke();
+            }
+
+            const SCAN_MS = 2800, MAP_MS = 1000;
+            let scanStart = null, mapStart = null, phase = 'scan';
+
+            function frame(ts) {
+                if (phase === 'scan') {
+                    if (!scanStart) scanStart = ts;
+                    const prog = Math.min((ts - scanStart) / SCAN_MS, 1);
+                    const scanY = prog * H;
+                    drawBase();
+                    ctx.fillStyle = 'rgba(0,0,0,.52)'; ctx.fillRect(0, scanY, W, H - scanY);
+                    ctx.fillStyle = 'rgba(78,205,196,.07)'; ctx.fillRect(0, 0, W, scanY);
+                    const gr = ctx.createLinearGradient(0, scanY - 26, 0, scanY + 26);
+                    gr.addColorStop(0, 'rgba(78,205,196,0)'); gr.addColorStop(.5, 'rgba(78,205,196,.88)'); gr.addColorStop(1, 'rgba(78,205,196,0)');
+                    ctx.fillStyle = gr; ctx.fillRect(0, scanY - 26, W, 52);
+                    ctx.strokeStyle = '#4ECDC4'; ctx.lineWidth = 2; ctx.shadowColor = '#4ECDC4'; ctx.shadowBlur = 16;
+                    ctx.beginPath(); ctx.moveTo(0, scanY); ctx.lineTo(W, scanY); ctx.stroke(); ctx.shadowBlur = 0;
+                    corners(); pts.forEach(p => { if (p.y <= scanY) dot(p, .9); });
+                    if (prog < 1) { animFrame = requestAnimationFrame(frame); }
+                    else { phase = 'map'; statusEl.textContent = t('mapping'); animFrame = requestAnimationFrame(frame); }
+                } else {
+                    if (!mapStart) mapStart = ts;
+                    const p = Math.min((ts - mapStart) / MAP_MS, 1);
+                    drawBase();
+                    ctx.fillStyle = 'rgba(78,205,196,.05)'; ctx.fillRect(0, 0, W, H);
+                    Object.values(LM).forEach(g => polyline(g, p));
+                    pts.forEach(pt => dot(pt, p));
+                    corners();
+                    if (p < 1) { animFrame = requestAnimationFrame(frame); }
+                    else { statusEl.textContent = t('complete'); setTimeout(showResults, 500); }
+                }
+            }
+            animFrame = requestAnimationFrame(frame);
+        }
+
+        // ── Render results ────────────────────────────────────────────────────────────
+        function showResults() {
+            const scores = generateScores(currentImgEl, currentB64);
+            const rank = getRank(scores.overallScore);
+            lastScores = scores; lastRankId = rank.id;
+            renderResults(scores, rank.id);
+        }
+
+        function renderResults(scores, rankId) {
+            applyTranslations();
+            const rank = RANKS.find(r => r.id === rankId);
+            document.getElementById('resultImg').src = currentImgSrc;
+            const card = document.getElementById('rankCard');
+            card.style.border = `1px solid ${rank.color}44`;
+            document.getElementById('rankBg').style.background = `radial-gradient(ellipse at 50% 60%,${rank.color}18 0%,transparent 65%)`;
+            document.getElementById('rankBadge').textContent = rank.label;
+            document.getElementById('rankBadge').style.color = rank.color;
+            document.getElementById('rankBadge').style.textShadow = `0 0 50px ${rank.color}88`;
+            document.getElementById('rankScore').textContent = scores.overallScore;
+            document.getElementById('rankDesc').textContent = T[lang].rankDescs[rankId];
+
+            const tc = document.getElementById('traitsContainer');
+            tc.innerHTML = '';
+            TRAIT_KEYS.forEach((key, i) => {
+                const v = scores.traits[key];
+                const isLow = v < 40, isMid = v < 70;
+                const color = isLow ? '#E05555' : isMid ? '#E0A840' : '#4ECDC4';
+                const label = T[lang].traits[i];
+                const div = document.createElement('div');
+                div.className = 'trait-row';
+                div.style.animationDelay = i * 55 + 'ms';
+                div.innerHTML = `
+      <div class="trait-header">
+        <span class="trait-name">${label}</span>
+        <span class="trait-val${isLow ? ' low' : ''}" style="color:${color}">${v}%${isLow ? ' ⚠' : ''}</span>
+      </div>
+      <div class="bar-bg">
+        <div class="bar-fill" style="width:${v}%;background:linear-gradient(90deg,${color}66,${color});box-shadow:0 0 6px ${color}55"></div>
+      </div>`;
+                tc.appendChild(div);
+            });
+
+            const sorted = [...TRAIT_KEYS].map((k, i) => ({ label: T[lang].traits[i], val: scores.traits[k] })).sort((a, b) => b.val - a.val);
+            const sl = document.getElementById('strengthsList'); sl.innerHTML = '';
+            sorted.slice(0, 3).forEach(t2 => {
+                const d = document.createElement('div'); d.className = 'sw-item';
+                d.style.borderLeft = '2px solid #4ECDC444';
+                d.textContent = `${t2.label} — ${t2.val}%`; sl.appendChild(d);
+            });
+            const il = document.getElementById('improveList'); il.innerHTML = '';
+            sorted.slice(-3).reverse().forEach(t2 => {
+                const d = document.createElement('div'); d.className = 'sw-item';
+                d.style.borderLeft = '2px solid #E0555544';
+                d.textContent = `${t2.label} — ${t2.val}%`; il.appendChild(d);
+            });
+
+            document.getElementById('verdictText').textContent = T[lang].verdicts[rankId];
+            show('results');
+        }
+
+        // ── Init ──────────────────────────────────────────────────────────────────────
+        applyTranslations();
+        buildLegend();
+    </script>
+</body>
+
+</html>
